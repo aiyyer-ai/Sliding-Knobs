@@ -2,10 +2,9 @@ window.onload = (event) => {
 //in case I want to make something run at launch
 }
 
-var snapPointsX = [];
-var snapPointsY = [];
+var snapPoints = [];
 var rand;
-let frontDiv = document.getElementById('front');
+let hexHolder = document.getElementById('allHex');
 var allInputs = document.getElementsByClassName('inputs');
 Array.from(allInputs).forEach(function(singleInput){
   singleInput.addEventListener("keyup", function(event) {
@@ -58,20 +57,26 @@ function setSeed() {
 	populateGrid();
 }
 
+const randomHexColorCode = () => {
+  let n = (rand() * 0xfffff * 1000000).toString(16);
+  return '#' + n.slice(0, 6);
+};
+
 function populateGrid() {
-	let gridWidth = 5;
-	let gridHeight = 5;
-	frontDiv.innerHTML = ``;
-	frontDiv.style.gridTemplateColumns = `auto`;
-	for (let i = 0; i < gridWidth - 1; i++) {
-		frontDiv.style.gridTemplateColumns += ` auto`;
-	}
-	for (let i = 0; i < (gridWidth*gridHeight); i++) {
+	let totalHexes = 46;
+	hexHolder.innerHTML = ``;
+	for (let i = 0; i < (totalHexes); i++) {
 		let gridDiv = document.createElement(`div`);
 		gridDiv.classList.add(`gridElement`);
-		frontDiv.append(gridDiv);
+		hexHolder.append(gridDiv);
+    gridDiv.style.backgroundColor = randomHexColorCode();
+    let gridBounds = gridDiv.getBoundingClientRect();
+    snapPoints.push([(gridBounds.left + gridBounds.right)/2,(gridBounds.top + gridBounds.bottom)/2]); //x,y
 	}
-
+  let playerDot = document.createElement(`div`);
+  playerDot.classList.add(`player`);
+  hexHolder.append(playerDot);
+  dragElement(playerDot);
 }
 
 function closest(goal, arr) {
@@ -90,7 +95,6 @@ function dragElement(elmnt) {
   } else {
     // otherwise, move the DIV from anywhere inside the DIV:
     elmnt.onmousedown = dragMouseDown;
-    elmnt.sliding = false;
   }
 
   function dragMouseDown(e) {
@@ -100,7 +104,6 @@ function dragElement(elmnt) {
     // get the mouse cursor position at startup:
     pos3 = e.clientX;
     pos4 = e.clientY;
-    elmnt.startingSnap = [closest(elmnt.style.top, snapPointsY), closest(elmnt.style.left, snapPointsX)];
     document.onmouseup = closeDragElement;
     // call a function whenever the cursor moves:
     document.onmousemove = elementDrag;
@@ -114,28 +117,54 @@ function dragElement(elmnt) {
     pos2 = pos4 - e.clientY;
     pos3 = e.clientX;
     pos4 = e.clientY;
-    let topLocation = closest(pos4, snapPointsY);
-    let leftLocation = closest(pos3, snapPointsX);
-    // if(!elmnt.sliding) {
-    // 	if(Math.abs(pos4 - topLocation) > Math.abs(pos3 - leftLocation)) {
-    // 		elmnt.sliding = true;
-    // 	} else {
-    // 		elmnt.sliding = true;
-    // 	}
-    // }
     // set the element's new position:
-    elmnt.style.top = topLocation - (elmnt.clientWidth / 2) - 4 + "px";
-    elmnt.style.left = leftLocation - (elmnt.clientHeight / 2) - 4  + "px";
+    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
   }
 
   function closeDragElement(event) {
-    let topLocation = closest(event.clientY, snapPointsY);
-    let leftLocation = closest(event.clientX, snapPointsX);
-    // set the element's new position:
-    elmnt.style.top = topLocation - (elmnt.clientWidth / 2) - 4 + "px";
-    elmnt.style.left = leftLocation - (elmnt.clientHeight / 2) - 4  + "px";
+    let playerBounds = elmnt.getBoundingClientRect();
+    let playerCenter = [(playerBounds.left + playerBounds.right) / 2, (playerBounds.top + playerBounds.bottom) / 2];
+    console.log(findClosestCoord(snapPoints, playerCenter));
     document.onmouseup = null;
     document.onmousemove = null;
   }
 }
+
+
+//Not using this code because i would have to loop through all the elements, going to try snap points instead
+
+// function theseDivsAreGay(input1, input2) {
+//   let div1 = input1.getBoundingClientRect();
+//   let div1Top = div1.top;
+//   let div1Left = div1.left;
+//   let div1Right = div1.right;
+//   let div1Bottom = div1.bottom;
+//   let div1Center = [((div1Left + div1Right) / 2), ((div1Top + div1Bottom) / 2)]; //x, y
+
+
+//   let div2 = input2.getBoundingClientRect();
+//   let div2Top = div2.top;
+//   let div2Left = div2.left;
+//   let div2Right = div2.right;
+//   let div2Bottom = div2.bottom;
+
+//   if (div2Top < div1Center[1] && div2Bottom > div1Center[1]) {
+//     let verticalMatch = true;
+//   } else{
+//     let verticalMatch = false;
+//   }
+
+//   if (div2Right > div1Center[0] && div2Left < div1Center[0]) {
+//     let horizontalMatch = true;
+//   } else {
+//     let horizontalMatch = false;
+//   }
+
+//   if (horizontalMatch && verticalMatch){
+//     return true;
+//   } else {
+//     return false;
+//   }
+// }
 
