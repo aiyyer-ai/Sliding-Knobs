@@ -4,6 +4,7 @@ window.onload = (event) => {
 
 var snapPointsX = [];
 var snapPointsY = [];
+var rand;
 let frontDiv = document.getElementById('front');
 var allInputs = document.getElementsByClassName('inputs');
 Array.from(allInputs).forEach(function(singleInput){
@@ -48,18 +49,18 @@ function sfc32(a, b, c, d) {
     }
 }
 
-function testRandom() {
+function setSeed() {
 	let seedString = document.getElementById('gameSeed').value;
 	var seedHash = cyrb128(seedString);
-	var rand = sfc32(seedHash[0], seedHash[1], seedHash[2], seedHash[3]);
-	console.log(rand());
-	console.log(rand());
-	console.log(rand());
+	rand = sfc32(seedHash[0], seedHash[1], seedHash[2], seedHash[3]);
+
+	//starting code
+	populateGrid();
 }
 
 function populateGrid() {
-	let gridWidth = document.getElementById('gridWidth').value;
-	let gridHeight = document.getElementById('gridHeight').value;
+	let gridWidth = 5;
+	let gridHeight = 5;
 	frontDiv.innerHTML = ``;
 	frontDiv.style.gridTemplateColumns = `auto`;
 	for (let i = 0; i < gridWidth - 1; i++) {
@@ -70,50 +71,7 @@ function populateGrid() {
 		gridDiv.classList.add(`gridElement`);
 		frontDiv.append(gridDiv);
 	}
-	var squares = Array.from(document.getElementsByClassName(`gridElement`));
-		squares.forEach(function(square){
-			let squareEdges = square.getBoundingClientRect();
-			snapPointsY.push(squareEdges.top);
-			snapPointsX.push(squareEdges.right);
-			snapPointsY.push(squareEdges.bottom);
-			snapPointsX.push(squareEdges.left);
-		});
-		snapPointsX = snapPointsX.filter((value, index) => snapPointsX.indexOf(value) === index);
-		snapPointsX = snapPointsX.filter((value, index) => {
-			let buffer = squares[0].clientHeight / 15;
-			if(Math.abs(snapPointsX[index+3] - value) < squares[0].clientHeight - buffer) {
-				return false;
-			} else {
-				return true;
-			}
-		});
-		snapPointsY = snapPointsY.filter((value, index) => snapPointsY.indexOf(value) === index);
-		snapPointsY = snapPointsY.filter((value, index) => {
-			let buffer = squares[0].clientHeight / 15;
-			if(Math.abs(snapPointsY[index+1] - value) < squares[0].clientHeight - buffer) {
-				return false;
-			} else {
-				return true;
-			}
-		});
-		snapPointsY.sort(function(a, b) {
-  			return a - b;
-		});
-		snapPointsX.sort(function(a, b) {
-  			return a - b;
-		});	
-		console.log(snapPointsX,snapPointsY);
 
-	let colorAmount = document.getElementById('gridColors').value;
-	for (let i = 0; i < colorAmount; i++) {
-		let gridDiv = document.createElement(`div`);
-		gridDiv.classList.add(`colorKnob`);
-		gridDiv.style.position = `absolute`;
-		frontDiv.append(gridDiv);
-		gridDiv.style.left = (snapPointsX[i] - gridDiv.clientWidth / 2) - 4 + `px`;
-		gridDiv.style.top = (snapPointsY[0] - gridDiv.clientHeight / 2) - 4 + `px`;
-		dragElement(gridDiv);
-	}
 }
 
 function closest(goal, arr) {

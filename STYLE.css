@@ -13,7 +13,8 @@ html {
 
 .board {
 	height: 400px;
-	width: 600px;
+	width: 400px;
+	margin: auto;
 	background-color: grey;
 	margin: 10px;
 }
@@ -23,12 +24,21 @@ html {
 	grid-template-columns: auto auto auto auto auto auto;
 	gap: 8px;
 	padding: 8px;
+	margin: auto;
 }
 
-.gridElement {
-	height: 100%;
-	width: 100%;
-	background-color: darkgrey;
+.perspective {
+	-webkit-transform: perspective(600px) rotateX(60deg);
+	-moz-transform: perspective(600px) rotateX(60deg);
+	-ms-transform: perspective(600px) rotateX(60deg);
+	-o-transform: perspective(600px) rotateX(60deg);
+	transform: perspective(600px) rotateX(60deg);
+}
+
+.gridElement::before {
+  content: "\2B22";
+  color: darkgrey;
+  font-size: 5vw;
 }
 
 .title {
