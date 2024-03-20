@@ -13,8 +13,8 @@ html {
 }
 
 .board {
-	height: 70vh;
-	width: 70vh;
+	height: 60vh;
+	width: 110vh;
 	margin: auto;
 	margin: 10px;
 }
@@ -25,6 +25,8 @@ html {
 	width: 7vh;
 	height: 7vh;
 	position: absolute;
+/*	border-style: double;
+	border-color: lightgray;*/
 }
 
 .board {
@@ -46,6 +48,17 @@ html {
   shape-outside: repeating-linear-gradient(#0000 0 calc(var(--f) - 3px), #000 0 var(--f));
 }
 
+.colorPanel {
+	background-color: transparent;
+	height: 10vh;
+	width: 110vh;
+	margin: auto;
+	margin-top: 50px;
+	border-radius: 20px;
+	clip-path: polygon(4.5% 0, 95.5% 0, 100% 50%, 95.5% 100%, 4.5% 100%, 0% 50%);
+	margin-bottom: calc(var(--m) - var(--s) * 0.2886);
+}
+
 .perspective {
 	-webkit-transform: perspective(600px) rotateX(60deg);
 	-moz-transform: perspective(600px) rotateX(60deg);
@@ -55,13 +68,14 @@ html {
 }
 
 .gridElement {
-  width: var(--s);
-  margin: var(--m);
-  height: calc(var(--s) * 1.1547);
-  display: inline-block;
-  font-size: initial; /* we reset the font-size if we want to add some content */
-  clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
-  margin-bottom: calc(var(--m) - var(--s) * 0.2886);
+	background-color: transparent;
+ 	width: var(--s);
+	margin: var(--m);
+	height: calc(var(--s) * 1.1547);
+	display: inline-block;
+	font-size: initial; /* we reset the font-size if we want to add some content */
+	clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
+	margin-bottom: calc(var(--m) - var(--s) * 0.2886);
 }
 
 .title {
